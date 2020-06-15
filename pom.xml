@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.kaelkirk</groupId>
-  <artifactId>.</artifactId>
+  <artifactId>survivor-s3-plugins</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>.</name>
@@ -84,5 +84,13 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <resources>
+      <resource>
+	      <directory>${project.basedir}</directory>
+	      <includes>
+	        <include>plugin.yml</include>
+	      </includes>
+      </resource>
+    </resources>
   </build>
 </project>
