@@ -1,0 +1,4 @@
+name: SpigotPluginFromScratch
+main: com.kaelkirk.Plugin
+version: 1.0
+# api-version: 1.13
