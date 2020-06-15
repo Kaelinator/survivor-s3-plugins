@@ -1,5 +1,6 @@
 package com.kaelkirk.commands;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +10,7 @@ import com.kaelkirk.Plugin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,8 +32,12 @@ public class WorldTeleportCommand implements CommandExecutor, TabCompleter {
     World targetWorld = Bukkit.getServer().getWorld(worldName);
 
     if (targetWorld == null) {
-      sender.sendMessage(worldName + " does not exist.");
-      return true;
+      sender.sendMessage("Loading " + worldName);
+      targetWorld = Bukkit.getServer().createWorld(new WorldCreator(worldName));
+      if (targetWorld == null) {
+        sender.sendMessage(worldName + " does not exist.");
+        return true;
+      }
     }
 
     if (sender instanceof Player) {
