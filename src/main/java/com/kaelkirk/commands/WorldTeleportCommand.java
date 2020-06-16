@@ -32,12 +32,8 @@ public class WorldTeleportCommand implements CommandExecutor, TabCompleter {
     World targetWorld = Bukkit.getServer().getWorld(worldName);
 
     if (targetWorld == null) {
-      sender.sendMessage("Loading " + worldName);
-      targetWorld = Bukkit.getServer().createWorld(new WorldCreator(worldName));
-      if (targetWorld == null) {
-        sender.sendMessage(worldName + " does not exist.");
-        return true;
-      }
+      sender.sendMessage(worldName + " does not exist.");
+      return true;
     }
 
     if (sender instanceof Player) {
