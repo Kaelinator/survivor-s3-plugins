@@ -50,7 +50,7 @@ public class WorldTeleportCommand implements CommandExecutor, TabCompleter {
     World targetWorld = Bukkit.getServer().getWorld(worldName);
 
     if (targetWorld == null) {
-      sender.sendMessage(worldName + " does not exist.");
+      sender.sendMessage("World " + worldName + " does not exist.");
       return true;
     }
 
