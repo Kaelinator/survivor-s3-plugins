@@ -18,10 +18,10 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 public class WorldTeleportCommand implements CommandExecutor, TabCompleter {
-  Plugin plugin;
+  // private Plugin plugin;
 
   public WorldTeleportCommand(Plugin plugin) {
-    this.plugin = plugin;
+    // this.plugin = plugin;
 	}
 
   @Override

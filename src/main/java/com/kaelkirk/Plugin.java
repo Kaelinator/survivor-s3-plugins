@@ -17,6 +17,8 @@ public class Plugin extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    System.out.println("SAVING DEFAULT CONFIG");
+    this.saveDefaultConfig();
     getCommand("wtp").setExecutor(new WorldTeleportCommand(this));
   }
  
