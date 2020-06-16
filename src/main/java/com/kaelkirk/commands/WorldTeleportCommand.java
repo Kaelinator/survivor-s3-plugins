@@ -1,6 +1,5 @@
 package com.kaelkirk.commands;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +9,6 @@ import com.kaelkirk.Plugin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +25,27 @@ public class WorldTeleportCommand implements CommandExecutor, TabCompleter {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-    String worldName = Arrays.asList(args).stream().collect(Collectors.joining(" "));
+    String worldName = null;
+    String selector = null;
+
+    switch (args.length) {
+      case 0:
+        sender.sendMessage("No world specified.");
+        return false;
+
+      case 1: // interpret as the world
+        worldName = args[0].replaceAll("/", " ");
+        break;
+      
+      case 2:
+        selector = args[0];
+        worldName = args[1].replaceAll("/", " ");
+        break;
+
+      default:
+        sender.sendMessage("Exceeded maximum arguments: " + args.length + " > 2.");
+        return false;
+    }
 
     World targetWorld = Bukkit.getServer().getWorld(worldName);
 
@@ -36,13 +54,24 @@ public class WorldTeleportCommand implements CommandExecutor, TabCompleter {
       return true;
     }
 
-    if (sender instanceof Player) {
-      Player player = (Player) sender;
+    Player target = null;
 
-      player.teleport(targetWorld.getSpawnLocation());
-      sender.sendMessage("Teleporting to " + worldName + ".");
+    if (selector != null) {
+      target = Bukkit.getPlayerExact(selector);
+      if (target == null) {
+        sender.sendMessage("Selector not found: " + selector);
+        return true;
+      }
+      sender.sendMessage("Teleporting " + target.getName() + " to " + worldName + ".");
+    } else if (sender instanceof Player) {
+      target = (Player) sender;
+    } else {
+      sender.sendMessage("No selector specified.");
+      return false;
     }
 
+    target.sendMessage("Teleporting to " + worldName + ".");
+    target.teleport(targetWorld.getSpawnLocation());
 
     return true;
   }
@@ -51,9 +80,18 @@ public class WorldTeleportCommand implements CommandExecutor, TabCompleter {
   public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
     List<String> suggestions = new ArrayList<String>();
 
-    for (World world : Bukkit.getServer().getWorlds()) {
-      suggestions.add(world.getName());
-    }
+    List<String> worldSuggestions = Bukkit.getServer().getWorlds().stream()
+      .map((World w) -> w.getName().replaceAll(" ", "/"))
+      .filter((String name) -> name.startsWith(args[args.length - 1]))
+      .collect(Collectors.toList());
+
+    List<String> nameSuggestions = Bukkit.getOnlinePlayers().stream()
+      .map((Player p) -> p.getName())
+      .filter((String name) -> name.startsWith(args[args.length - 1]))
+      .collect(Collectors.toList());
+    
+    suggestions.addAll(worldSuggestions);
+    suggestions.addAll(nameSuggestions);
 
     return suggestions;
   }

@@ -5,4 +5,4 @@ version: 1.0
 commands:
   wtp:
     description: teleport to a world
-    usage: /wtp <world>
+    usage: /wtp [player] <world>
