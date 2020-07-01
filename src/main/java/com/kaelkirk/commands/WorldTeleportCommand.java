@@ -25,6 +25,11 @@ public class WorldTeleportCommand implements CommandExecutor, TabCompleter {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+    if (sender instanceof Player && !((Player) sender).isOp()) {
+      sender.sendMessage("You do not have permissiont to use this command.");
+      return true;
+    }
+
     String worldName = null;
     String selector = null;
 
