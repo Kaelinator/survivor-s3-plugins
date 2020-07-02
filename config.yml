@@ -1,3 +1,6 @@
 # worlds to load upon server startup, allowing for /wtp
 # world specified in server.properties is already included
 worlds:
+
+
+initialHonor: 25
