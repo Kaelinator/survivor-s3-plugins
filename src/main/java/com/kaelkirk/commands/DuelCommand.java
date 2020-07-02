@@ -1,22 +1,15 @@
 package com.kaelkirk.commands;
 
-import java.util.List;
-
 import com.kaelkirk.machines.duels.DuelMachine;
 
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
-public class DuelCommand implements CommandExecutor, TabCompleter {
+public class DuelCommand implements CommandExecutor {
 
   private Plugin plugin;
   private DuelMachine duelMachine;
@@ -55,11 +48,6 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
     duelMachine.initiateNewDuel(dueler, duelee);
 
     return true;
-  }
-
-  @Override
-  public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-    return null;
   }
 
 }
