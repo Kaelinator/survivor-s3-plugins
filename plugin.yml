@@ -6,3 +6,6 @@ commands:
   wtp:
     description: teleport to a world
     usage: /wtp [player] <world>
+  duel:
+    description: duel a player for honor
+    usage: /duel <player>
