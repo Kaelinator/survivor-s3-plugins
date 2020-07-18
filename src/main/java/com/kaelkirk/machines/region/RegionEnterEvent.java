@@ -26,15 +26,13 @@ public class RegionEnterEvent implements Listener {
 
   private RegionQuery regionQuery;
   private DiscoverableRegion[] regions;
-  private RegionConfig config;
   
-  public RegionEnterEvent(Plugin plugin) {
+  public RegionEnterEvent() {
 
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     this.regionQuery = container.createQuery();
 
-    config = new RegionConfig(plugin);
-    regions = config.getDiscoverableRegions();
+    regions = RegionConfig.getDiscoverableRegions();
 
     /* load whether the regions have been found */
     for (DiscoverableRegion region : regions) {
@@ -47,7 +45,7 @@ public class RegionEnterEvent implements Listener {
   public void onPlayerMove(PlayerMoveEvent e) {
     Player p = e.getPlayer();
 
-    if (!config.getOpsDiscoverRegions() && p.isOp())
+    if (!RegionConfig.getOpsDiscoverRegions() && p.isOp())
       return;
 
     Location location = BukkitAdapter.adapt(p.getLocation());

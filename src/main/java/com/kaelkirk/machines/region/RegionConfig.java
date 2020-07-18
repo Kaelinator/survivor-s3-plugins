@@ -1,22 +1,27 @@
 package com.kaelkirk.machines.region;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 public class RegionConfig {
   
-  private Plugin plugin;
+  private static RegionConfig regionConfig = new RegionConfig();
+  private FileConfiguration config;
 
-  public RegionConfig(Plugin plugin) {
-    this.plugin = plugin;
+  private RegionConfig() { }
+
+  public static RegionConfig init(Plugin plugin) {
+    regionConfig.config = plugin.getConfig();
+    return regionConfig;
   }
 
-  public boolean getOpsDiscoverRegions() {
-    return plugin.getConfig().getBoolean("opsDiscoverRegions");
+  public static boolean getOpsDiscoverRegions() {
+    return regionConfig.config.getBoolean("opsDiscoverRegions");
   }
 
-  public DiscoverableRegion[] getDiscoverableRegions() {
-    ConfigurationSection regions = plugin.getConfig().getConfigurationSection("discoverableRegions");
+  public static DiscoverableRegion[] getDiscoverableRegions() {
+    ConfigurationSection regions = regionConfig.config.getConfigurationSection("discoverableRegions");
 
     return regions.getKeys(false)
       .stream()

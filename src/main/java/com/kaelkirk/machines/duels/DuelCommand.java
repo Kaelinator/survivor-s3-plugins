@@ -15,19 +15,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class DuelCommand implements CommandExecutor {
 
   private DuelMachine duelMachine;
   private RegionQuery regionQuery;
-  private DuelConfig config;
 
   public DuelCommand(DuelMachine duelMachine) {
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     this.regionQuery = container.createQuery();
     this.duelMachine = duelMachine;
-    config = new DuelConfig(plugin);
   }
 
   @Override
@@ -56,8 +53,8 @@ public class DuelCommand implements CommandExecutor {
     //   return true;
     // }
 
-    if (!playerIsInRegion(dueler, config.getDuelRegion())) {
-      sender.sendMessage("You must be in " + config.getDuelRegion().getFlag(Flags.GREET_TITLE) +
+    if (!playerIsInRegion(dueler, DuelConfig.getDuelRegion())) {
+      sender.sendMessage("You must be in " + DuelConfig.getDuelRegion().getFlag(Flags.GREET_TITLE) +
         ChatColor.WHITE + " in order to duel.");
       return true;
     }
