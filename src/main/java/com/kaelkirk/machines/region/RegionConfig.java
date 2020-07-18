@@ -1,7 +1,5 @@
 package com.kaelkirk.machines.region;
 
-import java.util.Set;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
@@ -13,9 +11,22 @@ public class RegionConfig {
     this.plugin = plugin;
   }
 
-  public Set<String> getDiscoverableRegions() {
+  public DiscoverableRegion[] getDiscoverableRegions() {
     ConfigurationSection regions = plugin.getConfig().getConfigurationSection("discoverableRegions");
-    Set<String> discoverableRegions = regions.getKeys(true);
-    return discoverableRegions;
+
+    return regions.getKeys(false)
+      .stream()
+      .map((String key) -> regions.getConfigurationSection(key))
+      .flatMap((ConfigurationSection world) -> {
+
+        return world.getKeys(false)
+          .stream()
+          .map((String key) -> world.getConfigurationSection(key))
+          .filter((ConfigurationSection region) -> region.contains("block"))
+          .filter((ConfigurationSection region) -> region.contains("blockLocation"))
+          .map((ConfigurationSection region) -> new DiscoverableRegion(world.getName(), region));
+      })
+      .toArray(DiscoverableRegion[]::new);
   }
+  
 }

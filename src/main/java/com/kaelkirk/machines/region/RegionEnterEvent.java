@@ -16,15 +16,16 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class RegionEnterEvent implements Listener {
 
-  private Plugin plugin;
   private RegionQuery regionQuery;
+  private DiscoverableRegion[] regions;
   
   public RegionEnterEvent(Plugin plugin) {
-    this.plugin = plugin;
 
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     this.regionQuery = container.createQuery();
 
+    RegionConfig config = new RegionConfig(plugin);
+    regions = config.getDiscoverableRegions();
   }
 
   @EventHandler
