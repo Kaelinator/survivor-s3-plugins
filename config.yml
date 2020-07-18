@@ -7,7 +7,7 @@ worlds:
 initialHonor: 25
 
 discoverableRegions:
-  world_name: # the name of the world for the child regions
-    example-region: # example-region is the id of the region to be defined as discoverable
+  example_world: # the name of the world for the child regions
+    example_region: # example-region is the id of the region to be defined as discoverable
       blockLocation: 41 119 17 # x y z of block to place once the region has been discovered
       block: 'minecraft:black_glazed_terracotta' # the type of block to be placed at blockLocation

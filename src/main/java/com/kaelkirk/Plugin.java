@@ -25,6 +25,9 @@ public class Plugin extends JavaPlugin {
   public void onEnable() {
     this.saveDefaultConfig();
 
+    WorldTeleportConfig config = new WorldTeleportConfig(this);
+    config.loadWorlds();
+
     DuelMachine duelMachine = new DuelMachine(this);
     PluginManager manager = getServer().getPluginManager();
 
@@ -33,9 +36,6 @@ public class Plugin extends JavaPlugin {
 
     getCommand("wtp").setExecutor(new WorldTeleportCommand(this));
     getCommand("duel").setExecutor(new DuelCommand(this, duelMachine));
-
-    WorldTeleportConfig config = new WorldTeleportConfig(this);
-    config.loadWorlds();
   }
  
 }
