@@ -1,6 +1,4 @@
-package com.kaelkirk.commands;
-
-import com.kaelkirk.machines.duels.DuelMachine;
+package com.kaelkirk.machines.duels;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -11,11 +9,10 @@ import org.bukkit.plugin.Plugin;
 
 public class DuelCommand implements CommandExecutor {
 
-  private Plugin plugin;
   private DuelMachine duelMachine;
 
   public DuelCommand(Plugin plugin, DuelMachine duelMachine) {
-    this.plugin = plugin;
+    // this.plugin = plugin;
     this.duelMachine = duelMachine;
   }
 

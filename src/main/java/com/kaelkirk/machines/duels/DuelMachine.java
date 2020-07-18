@@ -9,7 +9,7 @@ import org.bukkit.plugin.Plugin;
 public class DuelMachine {
   
   private Plugin plugin;
-  private DuelState state;
+  // private DuelState state;
 
   public DuelMachine(Plugin plugin) {
     this.plugin = plugin;

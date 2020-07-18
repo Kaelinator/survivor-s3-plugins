@@ -1,14 +1,15 @@
-package com.kaelkirk;
+package com.kaelkirk.machines.worldteleport;
 
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
+import org.bukkit.plugin.Plugin;
 
-public class ConfigHandler {
+public class WorldTeleportConfig {
   private Plugin plugin;
-  
-  public ConfigHandler(Plugin plugin) {
+
+  public WorldTeleportConfig(Plugin plugin) {
     this.plugin = plugin;
   }
 

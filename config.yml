@@ -1,6 +1,13 @@
 # worlds to load upon server startup, allowing for /wtp
 # world specified in server.properties is already included
 worlds:
-
+  - example_world # no spaces!
+  - another_example_world 
 
 initialHonor: 25
+
+discoverableRegions:
+  # example-region is the id of the region to be defined as discoverable
+  example-region:
+    blockLocation: 41 119 17 # x y z of block to place once the region has been discovered
+    block: 'minecraft:black_glazed_terracotta' # the type of block to be placed at blockLocation
