@@ -4,17 +4,23 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 public class WorldTeleportConfig {
-  private Plugin plugin;
+  private static WorldTeleportConfig wtpConfig = new WorldTeleportConfig();
+  private FileConfiguration config;
 
-  public WorldTeleportConfig(Plugin plugin) {
-    this.plugin = plugin;
+  private WorldTeleportConfig() { }
+
+  public static WorldTeleportConfig init(Plugin plugin) {
+    wtpConfig.config = plugin.getConfig();
+    loadWorlds();
+    return wtpConfig;
   }
 
-  public void loadWorlds() {
-    List<String> worlds = plugin.getConfig().getStringList("worlds");
+  private static void loadWorlds() {
+    List<String> worlds = wtpConfig.config.getStringList("worlds");
 
     for (String worldName : worlds) 
       Bukkit.getServer().createWorld(new WorldCreator(worldName));

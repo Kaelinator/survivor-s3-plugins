@@ -9,19 +9,20 @@ import org.bukkit.plugin.Plugin;
 public class DuelMachine {
   
   private Plugin plugin;
-  // private DuelState state;
+  private DuelState state;
 
   public DuelMachine(Plugin plugin) {
     this.plugin = plugin;
-    
+    this.state = DuelState.IDLE;
   }
 
   /**
-   * Initiates new duel between p1 and p2
-   * @param p1 - player to duel
-   * @param p2 - player to duel
+   * Initiates new duel between dueler and duelee
+   * @param dueler - player to duel
+   * @param duelee - player to duel
    */
-  public boolean initiateNewDuel(Player p1, Player p2) {
+  public boolean initiateNewDuel(Player dueler, Player duelee) {
+    
     return false;
   }
 
@@ -46,5 +47,9 @@ public class DuelMachine {
   public void setPlayerHonor(Player p, int newHonor) {
     PersistentDataContainer data = p.getPersistentDataContainer();
     data.set(new NamespacedKey(plugin, "honor"), PersistentDataType.INTEGER, newHonor);
+  }
+
+  public DuelState getState() {
+    return this.state;
   }
 }

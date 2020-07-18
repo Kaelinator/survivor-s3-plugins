@@ -24,17 +24,16 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 public class RegionEnterEvent implements Listener {
 
-  private boolean opsDiscoverRegions;
   private RegionQuery regionQuery;
   private DiscoverableRegion[] regions;
+  private RegionConfig config;
   
   public RegionEnterEvent(Plugin plugin) {
 
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     this.regionQuery = container.createQuery();
 
-    RegionConfig config = new RegionConfig(plugin);
-    opsDiscoverRegions = config.getOpsDiscoverRegions();
+    config = new RegionConfig(plugin);
     regions = config.getDiscoverableRegions();
 
     /* load whether the regions have been found */
@@ -48,18 +47,19 @@ public class RegionEnterEvent implements Listener {
   public void onPlayerMove(PlayerMoveEvent e) {
     Player p = e.getPlayer();
 
-    if (!opsDiscoverRegions && p.isOp())
+    if (!config.getOpsDiscoverRegions() && p.isOp())
       return;
 
     Location location = BukkitAdapter.adapt(p.getLocation());
     ApplicableRegionSet set = regionQuery.getApplicableRegions(location);
 
-    for (ProtectedRegion applicableRegion : set)
-      for (DiscoverableRegion region : regions)
+    for (ProtectedRegion applicableRegion : set) {
+      for (DiscoverableRegion region : regions) 
         if (region.isDiscovered())
           continue;
         else if (applicableRegion.equals(region.getRegion()))
           triggerDiscover(region, p);
+    }
   }
 
   /**

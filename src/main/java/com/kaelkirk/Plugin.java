@@ -1,6 +1,7 @@
 package com.kaelkirk;
 
 import com.kaelkirk.machines.duels.DuelCommand;
+import com.kaelkirk.machines.duels.DuelConfig;
 import com.kaelkirk.machines.duels.DuelMachine;
 import com.kaelkirk.machines.duels.DuelScoreboard;
 import com.kaelkirk.machines.region.RegionEnterEvent;
@@ -25,8 +26,8 @@ public class Plugin extends JavaPlugin {
   public void onEnable() {
     this.saveDefaultConfig();
 
-    WorldTeleportConfig config = new WorldTeleportConfig(this);
-    config.loadWorlds();
+    WorldTeleportConfig.init(this);
+    DuelConfig.init(this);
 
     DuelMachine duelMachine = new DuelMachine(this);
     PluginManager manager = getServer().getPluginManager();
@@ -35,7 +36,7 @@ public class Plugin extends JavaPlugin {
     manager.registerEvents(new RegionEnterEvent(this), this);
 
     getCommand("wtp").setExecutor(new WorldTeleportCommand(this));
-    getCommand("duel").setExecutor(new DuelCommand(this, duelMachine));
+    getCommand("duel").setExecutor(new DuelCommand(duelMachine));
   }
  
 }

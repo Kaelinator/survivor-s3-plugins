@@ -16,6 +16,7 @@ public class DuelScoreboard implements Listener {
   
   private Plugin plugin;
   private DuelMachine duelMachine;
+  private DuelConfig config;
 
   public DuelScoreboard(Plugin plugin, DuelMachine duelMachine) {
     this.plugin = plugin;
@@ -27,7 +28,7 @@ public class DuelScoreboard implements Listener {
     Player player = e.getPlayer();
     Integer honor = duelMachine.getPlayerHonor(player);
     if (honor == null) {
-      duelMachine.setPlayerHonor(player, plugin.getConfig().getInt("initialHonor"));
+      duelMachine.setPlayerHonor(player, );
     }
     displayHonorScoreboard(player);
   }
