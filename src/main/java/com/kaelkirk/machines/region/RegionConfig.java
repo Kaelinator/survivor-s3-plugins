@@ -11,6 +11,10 @@ public class RegionConfig {
     this.plugin = plugin;
   }
 
+  public boolean getOpsDiscoverRegions() {
+    return plugin.getConfig().getBoolean("opsDiscoverRegions");
+  }
+
   public DiscoverableRegion[] getDiscoverableRegions() {
     ConfigurationSection regions = plugin.getConfig().getConfigurationSection("discoverableRegions");
 

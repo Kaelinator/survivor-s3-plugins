@@ -24,6 +24,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 public class RegionEnterEvent implements Listener {
 
+  private boolean opsDiscoverRegions;
   private RegionQuery regionQuery;
   private DiscoverableRegion[] regions;
   
@@ -33,6 +34,7 @@ public class RegionEnterEvent implements Listener {
     this.regionQuery = container.createQuery();
 
     RegionConfig config = new RegionConfig(plugin);
+    opsDiscoverRegions = config.getOpsDiscoverRegions();
     regions = config.getDiscoverableRegions();
 
     /* load whether the regions have been found */
@@ -46,9 +48,8 @@ public class RegionEnterEvent implements Listener {
   public void onPlayerMove(PlayerMoveEvent e) {
     Player p = e.getPlayer();
 
-    /* Ops shouldn't trigger a region found */
-    // if (p.isOp())
-    //   return;
+    if (!opsDiscoverRegions && p.isOp())
+      return;
 
     Location location = BukkitAdapter.adapt(p.getLocation());
     ApplicableRegionSet set = regionQuery.getApplicableRegions(location);

@@ -4,10 +4,15 @@ worlds:
   - example_world # no spaces!
   - another_example_world 
 
+# name of the world and region id for where duels may take place
+# region must reside in the world
+duelLocation: 'example_world:example_region'
 initialHonor: 25
+
+opsDiscoverRegions: false # whether or not ops can discover regions
 
 discoverableRegions:
   example_world: # the name of the world for the child regions
     example_region: # example-region is the id of the region to be defined as discoverable
       blockLocation: 41 119 17 # x y z of block to place once the region has been discovered
-      block: 'minecraft:black_glazed_terracotta' # the type of block to be placed at blockLocation
+      block: 'minecraft:stone' # the type of block to be placed at blockLocation
