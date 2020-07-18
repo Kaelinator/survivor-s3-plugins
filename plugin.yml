@@ -1,6 +1,7 @@
 name: Survivor
 main: com.kaelkirk.Plugin
 version: 1.0
+depend: [WorldGuard]
 # api-version: 1.13
 commands:
   wtp:
