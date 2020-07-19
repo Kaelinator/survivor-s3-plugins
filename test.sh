@@ -1,0 +1,1 @@
+nodemon -e java --exec "mvn test && exit 0"
