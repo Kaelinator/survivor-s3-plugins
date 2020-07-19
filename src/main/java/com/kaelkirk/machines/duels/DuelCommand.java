@@ -65,7 +65,7 @@ public class DuelCommand implements CommandExecutor {
       return true;
     }
       
-    DuelMachine.initiateNewDuel(dueler, duelee);
+    DuelMachine.requestDuel(dueler, duelee);
 
     return true;
   }

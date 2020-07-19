@@ -4,13 +4,14 @@ worlds:
   - example_world # no spaces!
   - another_example_world 
 
-# name of the world and region id for where duels may take place
-# region must reside in the world
 duel:
-  location: 'example_world:example_region'
-  pregame: 5 # how soon (in seconds) a game begins once both parties have made it into the arena
-  cooldown: 20 # how soon (in seconds) another game may be initiated after a game has ended
-  wait: 300 # how long a duel request lasts unfulfilled
+  # name of the world and region id for where duels may take place
+  # region must reside in the world
+  location: 'example_world:example_region' # **teleport flag must be outside of the region itself**
+  pregameTime: 5 # how soon (in seconds) a game begins once both parties have made it into the arena
+  cooldownTime: 20 # how soon (in seconds) another game may be initiated after a game has ended
+  waitTime: 300 # how long a duel request lasts unfulfilled
+  ingameTime: 180 # how long a duel may last
   initialHonor: 25 # the honor that a player begins with (upon first login)
 
 opsDiscoverRegions: false # whether or not ops can discover regions

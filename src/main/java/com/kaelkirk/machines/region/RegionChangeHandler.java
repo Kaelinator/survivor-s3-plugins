@@ -1,6 +1,9 @@
 package com.kaelkirk.machines.region;
 
-import com.kaelkirk.Plugin;
+import java.util.HashSet;
+
+import com.kaelkirk.machines.duels.DuelConfig;
+import com.kaelkirk.machines.duels.DuelMachine;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.WorldGuard;
@@ -21,13 +24,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
 
-public class RegionEnterEvent implements Listener {
+public class RegionChangeHandler implements Listener {
 
   private RegionQuery regionQuery;
   private DiscoverableRegion[] regions;
-  
-  public RegionEnterEvent() {
+  private Plugin plugin;
+
+  public RegionChangeHandler(Plugin plugin) {
+    this.plugin = plugin;
 
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     this.regionQuery = container.createQuery();
@@ -45,19 +53,38 @@ public class RegionEnterEvent implements Listener {
   public void onPlayerMove(PlayerMoveEvent e) {
     Player p = e.getPlayer();
 
-    if (!RegionConfig.getOpsDiscoverRegions() && p.isOp())
-      return;
-
     Location location = BukkitAdapter.adapt(p.getLocation());
     ApplicableRegionSet set = regionQuery.getApplicableRegions(location);
 
+    boolean inDuelRegion = false;
     for (ProtectedRegion applicableRegion : set) {
+      if (applicableRegion.equals(DuelConfig.getDuelRegion()))
+        inDuelRegion = true;
       for (DiscoverableRegion region : regions) 
-        if (region.isDiscovered())
+        if (region.isDiscovered() && (!RegionConfig.getOpsDiscoverRegions() && p.isOp()))
           continue;
         else if (applicableRegion.equals(region.getRegion()))
           triggerDiscover(region, p);
     }
+
+    handleDuelRegion(p, inDuelRegion, e);
+  }
+
+  private void handleDuelRegion(Player p, boolean inDuelRegion, PlayerMoveEvent e) {
+    if (p.hasMetadata("inDuelRegion")) {
+      boolean wasInDuelRegion = false;
+      for (MetadataValue v : p.getMetadata("inDuelRegion"))
+        if (v.getOwningPlugin().equals(plugin))
+          wasInDuelRegion = (boolean) v.value();
+      
+      if (wasInDuelRegion && !inDuelRegion) 
+        DuelMachine.onPlayerExitDuelRegion(e);
+      
+      if (!wasInDuelRegion && inDuelRegion)
+        DuelMachine.onPlayerEnterDuelRegion(e);
+    }
+
+    p.setMetadata("inDuelRegion", new FixedMetadataValue(plugin, inDuelRegion));
   }
 
   /**

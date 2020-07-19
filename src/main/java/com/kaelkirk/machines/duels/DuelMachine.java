@@ -1,17 +1,20 @@
 package com.kaelkirk.machines.duels;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
-import java.util.Map.Entry;
 
-import com.kaelkirk.machines.duels.DuelMachine.DuelRequest;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
@@ -19,16 +22,16 @@ import org.bukkit.plugin.Plugin;
 public class DuelMachine implements Runnable {
 
   private static DuelMachine duelMachine = new DuelMachine();
-  private ArrayList<DuelRequest> duelRequests;
+  private ArrayList<DuelData> duelRequests;
   private Plugin plugin;
-  private DuelState state;
+  private DuelData duel;
 
   private DuelMachine() { }
 
   public static void init(Plugin plugin) {
     duelMachine.plugin = plugin;
-    duelMachine.state = DuelState.IDLE;
-    duelMachine.duelRequests = new ArrayList<DuelRequest>();
+    duelMachine.duel = new DuelData();
+    duelMachine.duelRequests = new ArrayList<DuelData>();
     Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, duelMachine, 0, 20);
   }
 
@@ -38,38 +41,188 @@ public class DuelMachine implements Runnable {
    * @param dueler - player to duel
    * @param duelee - player to duel
    */
-  public static void initiateNewDuel(Player dueler, Player duelee) {
-    sendRequestMessages(duelee, dueler);
+  public static void requestDuel(Player dueler, Player duelee) {
+    DuelData req = new DuelData(dueler, duelee);
 
-    duelMachine.duelRequests.add(new DuelRequest(dueler, duelee, DuelConfig.getWait()));
+    sendRequestMessages(req);
+
+    duelMachine.duelRequests.add(req);
   }
 
   /* Game loop */
   @Override
   public void run() {
-    Iterator<DuelRequest> itr = duelMachine.duelRequests.iterator();
+    Iterator<DuelData> itr = duelMachine.duelRequests.iterator();
 
     while (itr.hasNext()) {
-      DuelRequest req = itr.next();
+      DuelData req = itr.next();
       req.update();
-      if (req.isExpired()) {
+      if (req.isExpired() || !isInDuelRegion(req.getDueler())) {
+        sendExpiredMessages(req);
+        itr.remove();
+        continue;
+      }
+
+      if (isInDuelRegion(req.getDuelee())) {
+        // begin game
+        sendPregameMessages(req);
+        duelMachine.duel = req;
+        duelMachine.duel.setState(DuelState.PREGAME);
+        duelMachine.duelRequests.clear();
+        break;
       }
     }
-    
+
+    int time = duelMachine.duel.getTime();
+    Player duelee = duelMachine.duel.getDuelee();
+    Player dueler = duelMachine.duel.getDueler();
+    switch (duelMachine.duel.getState()) {
+      case IDLE: break;
+
+      case PREGAME:
+        duelMachine.duel.update();
+
+        if (!isInDuelRegion(duelee))
+          endMatch(duelee);
+        if (!isInDuelRegion(dueler))
+          endMatch(dueler);
+
+        if (time <= 0) {
+          duelMachine.duel.setState(DuelState.INGAME);
+          sendText(duelMachine.duel, "Go!");
+          kickOtherPlayersOut(duelMachine.duel);
+        } else if (time % 10 == 0 || time < 5)
+          sendText(duelMachine.duel, "Duel in " + time + "s");
+
+        break;
+
+      case INGAME:
+        duelMachine.duel.update();
+
+        if (!isInDuelRegion(duelee))
+          endMatch(duelee);
+        if (!isInDuelRegion(dueler))
+          endMatch(dueler);
+
+        if (time <= 0) {
+          duelMachine.duel.setState(DuelState.POSTGAME);
+          sendText(duelMachine.duel, "Duel time exceeded");
+        }
+        break;
+
+      case POSTGAME:
+        duelMachine.duel.update();
+
+        if (time <= 0) {
+          duelMachine.duel = new DuelData();
+        }
+        break;
+
+      case WAITING:
+        System.err.println("Duel shouldn't be in WAITING state");
+        break;
+
+      default:
+        System.err.println("Invalid duel state");
+        break;
+    }
   }
   
+  private void sendPregameMessages(DuelData req) {
+    Player duelee = req.getDuelee();
+    Player dueler = req.getDueler();
+    duelee.sendMessage("You accepted " + dueler.getDisplayName() + ChatColor.WHITE +
+      "'s duel request");
+    dueler.sendMessage(duelee.getDisplayName() + ChatColor.WHITE + " has accepted your duel request");
+  }
+
+  /**
+   * Remove all players not in the current duel to the teleport location for duel
+   * region. Tells the player why
+   */
+  private void kickOtherPlayersOut(DuelData duel) {
+    Location spectateLocation = BukkitAdapter.adapt(DuelConfig.getDuelRegion().getFlag(Flags.TELE_LOC));
+    Bukkit.getOnlinePlayers().forEach((Player p) -> {
+      if (isInDuelRegion(p) && !p.equals(duel.getDuelee()) && !p.equals(duel.getDueler())) {
+        p.teleport(spectateLocation);
+        p.sendMessage("You have been removed from the arena because a duel has begun.");
+      }
+    });
+  }
+
+  private boolean isInDuelRegion(Player p) {
+
+    if (!p.hasMetadata("inDuelRegion"))
+      return false;
+    
+    for (MetadataValue v : p.getMetadata("inDuelRegion"))
+      if (v.getOwningPlugin().equals(plugin))
+        return (boolean) v.value();
+    
+    return false;
+  }
+  
+  public static void endMatch(Player loser) {
+    duelMachine.duel.setState(DuelState.POSTGAME);
+    Player winner = (DuelMachine.getDuelee().equals(loser)) 
+      ? DuelMachine.getDueler() : DuelMachine.getDuelee();
+
+    loser.sendMessage("You lost!");
+    winner.sendMessage("You win!");
+    System.out.println("Duel ended, winner: " + winner.getName() + ", loser: " + loser.getName());
+
+    // TODO: modify honor accordingly
+  }
+
+  public static void onPlayerExitDuelRegion(PlayerMoveEvent e) {
+    Player p = e.getPlayer();
+    for (DuelData req : duelMachine.duelRequests) {
+      if (req.getDueler().equals(p)) {
+
+        e.setCancelled(true);
+        return;
+      }
+    }
+  }
+
+  public static void onPlayerEnterDuelRegion(PlayerMoveEvent e) {
+    DuelState state = duelMachine.duel.getState();
+    if (state == DuelState.IDLE || state == DuelState.WAITING)
+      return;
+    Player p = e.getPlayer();
+    Player dueler = duelMachine.duel.getDueler();
+    Player duelee = duelMachine.duel.getDuelee();
+    
+    if (p.equals(duelee) || p.equals(dueler))
+      return;
+    
+    p.sendMessage("You may not enter " + DuelConfig.getDuelRegion().getFlag(Flags.GREET_TITLE) +
+      ChatColor.WHITE + " while a duel is in progress.");
+    Location spectateLocation = BukkitAdapter.adapt(DuelConfig.getDuelRegion().getFlag(Flags.TELE_LOC));
+    p.teleport(spectateLocation);
+  }
+
+  /**
+   * Sends text to players
+   */
+  private void sendText(DuelData duel, String text) {
+    duel.getDueler().sendMessage(text);
+    duel.getDuelee().sendMessage(text);
+  }
+
   /**
    * Returns whether a new duel between dueler and duelee can occur
+   * 
    * @param dueler - player to duel
    * @param duelee - player to duel
    */
   public static void canDuel(Player dueler, Player duelee) throws DuelMachineException {
-    if (duelMachine.state != DuelState.IDLE)
+    if (duelMachine.duel.getState() != DuelState.IDLE)
       throw new DuelMachineException("Wait for the current duel to complete.");
     
     UUID dueleeUUID = duelee.getUniqueId();
     UUID duelerUUID = dueler.getUniqueId();
-    for (DuelRequest d : duelMachine.duelRequests) {
+    for (DuelData d : duelMachine.duelRequests) {
       if (d.getDueler().getUniqueId() == duelerUUID)
         throw new DuelMachineException("Wait for your pending duel request to " + 
           duelee.getDisplayName() + ChatColor.WHITE + " to expire.");
@@ -81,16 +234,29 @@ public class DuelMachine implements Runnable {
   }
 
   /**
-   * Sends messages to player to initate duel
+   * Sends messages to players to initate duel
    */
-  private static void sendRequestMessages(Player duelee, Player dueler) {
-    double minutes = Math.floor(DuelConfig.getWait() / 6) / 10;
+  private static void sendRequestMessages(DuelData req) {
+    Player dueler = req.getDueler(), duelee = req.getDuelee();
+    double minutes = Math.floor(DuelConfig.getWaitTime() / 6) / 10;
+
     dueler.sendMessage("Duel request sent to " + duelee.getDisplayName() + ChatColor.WHITE +
       ". They have " + minutes + " minutes to enter the arena.");
 
     duelee.sendMessage(dueler.getDisplayName() + ChatColor.WHITE + 
       " has challenged you to a duel. To accept, you have " +
       minutes + " minutes to enter the arena");
+  }
+
+  /**
+   * Sends messages to players about expired duel request
+   */
+  private static void sendExpiredMessages(DuelData req) {
+    Player dueler = req.getDueler(), duelee = req.getDuelee();
+
+    dueler.sendMessage("Duel request to " + duelee.getDisplayName() + ChatColor.WHITE + " has expired.");
+
+    duelee.sendMessage("Duel request from " + dueler.getDisplayName() + ChatColor.WHITE + " has expired.");
   }
 
   /**
@@ -117,7 +283,15 @@ public class DuelMachine implements Runnable {
   }
 
   public static DuelState getState() {
-    return duelMachine.state;
+    return duelMachine.duel.getState();
+  }
+
+  public static Player getDuelee() {
+    return duelMachine.duel.getDuelee();
+  }
+
+  public static Player getDueler() {
+    return duelMachine.duel.getDueler();
   }
 
   public static class DuelMachineException extends Throwable {
@@ -133,15 +307,21 @@ public class DuelMachine implements Runnable {
     }
   }
 
-  public static class DuelRequest {
+  public static class DuelData {
     private Player duelee;
     private Player dueler;
-    private int waitTime; // 1/20 of a second 
+    private DuelState state;
+    private int time; // 1/20 of a second 
 
-    public DuelRequest(Player dueler, Player duelee, int waitTime) {
+    public DuelData(Player dueler, Player duelee) {
       this.dueler = dueler;
       this.duelee = duelee;
-      this.waitTime = waitTime;
+      setState(DuelState.WAITING);
+    }
+
+    public DuelData() {
+      this(null, null);
+      setState(DuelState.IDLE);
     }
 
     public Player getDuelee() {
@@ -152,12 +332,50 @@ public class DuelMachine implements Runnable {
       return dueler;
     }
 
+    public DuelState getState() {
+      return state;
+    }
+
     public void update() {
-      waitTime--;
+      time--;
+    }
+
+    public int getTime() {
+      return time;
     }
 
     public boolean isExpired() {
-      return waitTime <= 0;
+      return time <= 0;
+    }
+    
+    /**
+     * sets state and time according to state
+     */
+    public void setState(DuelState state) {
+      switch (state) {
+        case IDLE:
+          time = 0;
+          break;
+        case INGAME:
+          time = DuelConfig.getIngameTime();
+          break;
+        case POSTGAME:
+          time = DuelConfig.getPostgameTime();
+          break;
+        case PREGAME:
+          time = DuelConfig.getPregameTime();
+          break;
+        case WAITING:
+          time = DuelConfig.getWaitTime();
+          break;
+        default:
+          System.err.println("Invalid DuelState in setState");
+          time = 0;
+          break;
+        
+      }
+      this.state = state;
     }
   }
+
 }

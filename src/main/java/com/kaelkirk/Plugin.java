@@ -3,6 +3,7 @@ package com.kaelkirk;
 import com.kaelkirk.machines.duels.DuelCommand;
 import com.kaelkirk.machines.duels.DuelConfig;
 import com.kaelkirk.machines.duels.DuelMachine;
+import com.kaelkirk.machines.duels.DuelPvpHandler;
 import com.kaelkirk.machines.duels.DuelScoreboard;
 import com.kaelkirk.machines.duels.HonorCommand;
 import com.kaelkirk.machines.region.RegionChangeHandler;
@@ -35,7 +36,8 @@ public class Plugin extends JavaPlugin {
 
     PluginManager manager = getServer().getPluginManager();
 
-    manager.registerEvents(new DuelScoreboard(), this);
+    manager.registerEvents(new DuelScoreboard(this), this);
+    manager.registerEvents(new DuelPvpHandler(this), this);
     manager.registerEvents(new RegionChangeHandler(this), this);
 
     getCommand("wtp").setExecutor(new WorldTeleportCommand(this));

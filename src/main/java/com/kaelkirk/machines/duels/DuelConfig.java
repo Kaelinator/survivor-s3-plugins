@@ -17,7 +17,10 @@ public class DuelConfig {
   private FileConfiguration config;
   private ProtectedRegion duelRegion;
   private Integer initialHonor;
-  private Integer wait;
+  private Integer waitTime;
+  private Integer pregameTime;
+  private Integer ingameTime;
+  private Integer postgameTime;
 
   private DuelConfig() { }
 
@@ -29,12 +32,36 @@ public class DuelConfig {
     duelConfig.config = plugin.getConfig();
   }
 
-  public static int getWait() {
-    if (duelConfig.wait != null)
-      return duelConfig.wait;
+  public static int getPregameTime() {
+    if (duelConfig.pregameTime != null)
+      return duelConfig.pregameTime;
 
-    duelConfig.wait = duelConfig.config.getInt("duel.wait");
-    return duelConfig.wait;
+    duelConfig.pregameTime = duelConfig.config.getInt("duel.pregameTime");
+    return duelConfig.pregameTime;
+  }
+
+  public static int getWaitTime() {
+    if (duelConfig.waitTime != null)
+      return duelConfig.waitTime;
+
+    duelConfig.waitTime = duelConfig.config.getInt("duel.waitTime");
+    return duelConfig.waitTime;
+  }
+
+  public static int getIngameTime() {
+    if (duelConfig.ingameTime != null)
+      return duelConfig.ingameTime;
+
+    duelConfig.ingameTime = duelConfig.config.getInt("duel.ingameTime");
+    return duelConfig.ingameTime;
+  }
+
+  public static int getPostgameTime() {
+    if (duelConfig.postgameTime != null)
+      return duelConfig.postgameTime;
+
+    duelConfig.postgameTime = duelConfig.config.getInt("duel.postgameTime");
+    return duelConfig.postgameTime;
   }
 
   public static int getInitialHonor() {
@@ -73,4 +100,5 @@ public class DuelConfig {
     
     return duelConfig.duelRegion;
   }
+
 }

@@ -12,4 +12,4 @@ commands:
     usage: /duel <player>
   honor:
     description: Get and set a player's honor
-    usage: /duel <player> [honor]
+    usage: /honor <player> [honor]

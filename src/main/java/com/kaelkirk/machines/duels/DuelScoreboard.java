@@ -1,10 +1,15 @@
 package com.kaelkirk.machines.duels;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -12,6 +17,14 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 public class DuelScoreboard implements Listener {
+
+  HashMap<UUID, Integer> scheduledIds;
+  private Plugin plugin;
+
+  public DuelScoreboard(Plugin plugin) {
+    scheduledIds = new HashMap<UUID, Integer>();
+    this.plugin = plugin;
+  }
   
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent e) {
@@ -20,7 +33,23 @@ public class DuelScoreboard implements Listener {
     if (honor == null) {
       DuelMachine.setPlayerHonor(player, DuelConfig.getInitialHonor());
     }
-    displayHonorScoreboard(player);
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
+      @Override
+      public void run() {
+        displayHonorScoreboard(player);
+      }
+    }, 0, 20);
+  }
+
+  @EventHandler
+  public void onPlayerLeave(PlayerQuitEvent e) {
+
+    Player player = e.getPlayer();
+    if (player == null)
+      return;
+    UUID id = player.getUniqueId();
+
+    Bukkit.getScheduler().cancelTask(scheduledIds.get(id));
   }
 
   /**
