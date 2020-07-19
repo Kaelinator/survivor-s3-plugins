@@ -10,3 +10,6 @@ commands:
   duel:
     description: duel a player for honor
     usage: /duel <player>
+  honor:
+    description: Get and set a player's honor
+    usage: /duel <player> [honor]
