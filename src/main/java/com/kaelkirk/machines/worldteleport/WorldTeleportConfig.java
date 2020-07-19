@@ -13,10 +13,9 @@ public class WorldTeleportConfig {
 
   private WorldTeleportConfig() { }
 
-  public static WorldTeleportConfig init(Plugin plugin) {
+  public static void init(Plugin plugin) {
     wtpConfig.config = plugin.getConfig();
     loadWorlds();
-    return wtpConfig;
   }
 
   private static void loadWorlds() {

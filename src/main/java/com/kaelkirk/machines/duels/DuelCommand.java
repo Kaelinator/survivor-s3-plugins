@@ -1,5 +1,6 @@
 package com.kaelkirk.machines.duels;
 
+import com.kaelkirk.machines.duels.DuelMachine.DuelMachineException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.WorldGuard;
@@ -18,13 +19,11 @@ import org.bukkit.entity.Player;
 
 public class DuelCommand implements CommandExecutor {
 
-  private DuelMachine duelMachine;
   private RegionQuery regionQuery;
 
-  public DuelCommand(DuelMachine duelMachine) {
+  public DuelCommand() {
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     this.regionQuery = container.createQuery();
-    this.duelMachine = duelMachine;
   }
 
   @Override
@@ -48,18 +47,25 @@ public class DuelCommand implements CommandExecutor {
       return true;
     }
 
-    // if (duelee.getUniqueId().equals(dueler.getUniqueId())) {
-    //   sender.sendMessage("You may not duel yourself.");
-    //   return true;
-    // }
-
-    if (!playerIsInRegion(dueler, DuelConfig.getDuelRegion())) {
-      sender.sendMessage("You must be in " + DuelConfig.getDuelRegion().getFlag(Flags.GREET_TITLE) +
-        ChatColor.WHITE + " in order to duel.");
+    if (duelee.getUniqueId().equals(dueler.getUniqueId())) {
+      sender.sendMessage("You may not duel yourself.");
       return true;
     }
 
-    duelMachine.initiateNewDuel(dueler, duelee);
+    if (!playerIsInRegion(dueler, DuelConfig.getDuelRegion())) {
+      sender.sendMessage("You must be in " + DuelConfig.getDuelRegion().getFlag(Flags.GREET_TITLE) + ChatColor.WHITE
+          + " in order to duel.");
+      return true;
+    }
+
+    try {
+      DuelMachine.canDuel(dueler, duelee);
+    } catch (DuelMachineException e) {
+      sender.sendMessage(e.getMessage());
+      return true;
+    }
+      
+    DuelMachine.initiateNewDuel(dueler, duelee);
 
     return true;
   }

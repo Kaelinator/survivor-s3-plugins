@@ -17,6 +17,7 @@ public class DuelConfig {
   private FileConfiguration config;
   private ProtectedRegion duelRegion;
   private Integer initialHonor;
+  private Integer wait;
 
   private DuelConfig() { }
 
@@ -24,16 +25,23 @@ public class DuelConfig {
     return duelConfig;
   }
 
-  public static DuelConfig init(Plugin plugin) {
+  public static void init(Plugin plugin) {
     duelConfig.config = plugin.getConfig();
-    return duelConfig;
+  }
+
+  public static int getWait() {
+    if (duelConfig.wait != null)
+      return duelConfig.wait;
+
+    duelConfig.wait = duelConfig.config.getInt("duel.wait");
+    return duelConfig.wait;
   }
 
   public static int getInitialHonor() {
     if (duelConfig.initialHonor != null)
       return duelConfig.initialHonor;
     
-    duelConfig.initialHonor = duelConfig.config.getInt("duel.duelConfig.initialHonor");
+    duelConfig.initialHonor = duelConfig.config.getInt("duel.initialHonor");
     return duelConfig.initialHonor;
   }
 

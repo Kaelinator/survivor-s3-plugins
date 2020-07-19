@@ -30,15 +30,15 @@ public class Plugin extends JavaPlugin {
     WorldTeleportConfig.init(this);
     DuelConfig.init(this);
     RegionConfig.init(this);
+    DuelMachine.init(this);
 
-    DuelMachine duelMachine = new DuelMachine(this);
     PluginManager manager = getServer().getPluginManager();
 
-    manager.registerEvents(new DuelScoreboard(duelMachine), this);
+    manager.registerEvents(new DuelScoreboard(), this);
     manager.registerEvents(new RegionEnterEvent(), this);
 
     getCommand("wtp").setExecutor(new WorldTeleportCommand(this));
-    getCommand("duel").setExecutor(new DuelCommand(duelMachine));
+    getCommand("duel").setExecutor(new DuelCommand());
   }
  
 }

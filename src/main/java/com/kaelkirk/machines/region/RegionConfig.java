@@ -11,9 +11,8 @@ public class RegionConfig {
 
   private RegionConfig() { }
 
-  public static RegionConfig init(Plugin plugin) {
+  public static void init(Plugin plugin) {
     regionConfig.config = plugin.getConfig();
-    return regionConfig;
   }
 
   public static boolean getOpsDiscoverRegions() {
