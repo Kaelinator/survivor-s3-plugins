@@ -48,6 +48,9 @@ public class DuelScoreboard implements Listener {
     if (player == null)
       return;
     UUID id = player.getUniqueId();
+    Integer scheduleId = scheduledIds.get(id);
+    if (scheduleId == null)
+      return;
 
     Bukkit.getScheduler().cancelTask(scheduledIds.get(id));
   }
