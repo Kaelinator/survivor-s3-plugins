@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,6 +17,8 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+
+import static com.kaelkirk.machines.duels.EloCalculator.calculateElo;
 
 public class DuelMachine implements Runnable {
 
@@ -106,7 +107,7 @@ public class DuelMachine implements Runnable {
 
         if (time <= 0) {
           duelMachine.duel.setState(DuelState.POSTGAME);
-          sendText(duelMachine.duel, "Duel time exceeded");
+          endMatch(null);
         }
         break;
 
@@ -164,14 +165,69 @@ public class DuelMachine implements Runnable {
   
   public static void endMatch(Player loser) {
     duelMachine.duel.setState(DuelState.POSTGAME);
-    Player winner = (DuelMachine.getDuelee().equals(loser)) 
-      ? DuelMachine.getDueler() : DuelMachine.getDuelee();
 
-    loser.sendMessage("You lost!");
-    winner.sendMessage("You win!");
-    System.out.println("Duel ended, winner: " + winner.getName() + ", loser: " + loser.getName());
+    int R_a = getPlayerHonor(getDueler());
+    int R_b = getPlayerHonor(getDuelee());
+    int N_a = R_a; // new honor a
+    int N_b = R_b; // new honor b
+    double S_a = 0.5;
+    double S_b = 0.5;
 
-    // TODO: modify honor accordingly
+    StringBuilder result = new StringBuilder();
+    if (loser.equals(getDueler())) {
+      S_a = 0;
+      S_b = 1;
+      int[] honorChange = calculateElo(R_a, R_b, S_a, S_b, DuelConfig.getX(), DuelConfig.getK());
+      N_a = honorChange[0] + R_a;
+      N_b = honorChange[1] + R_b;
+      result.append(getDuelee().getDisplayName());
+      result.append(ChatColor.GREEN);
+      result.append(" " + N_b + " (+" + honorChange[1] + ")");
+      result.append(ChatColor.WHITE);
+      result.append(" has beaten ");
+      result.append(getDueler().getDisplayName());
+      result.append(ChatColor.RED);
+      result.append(" " + N_a + " (-" + honorChange[0] + ")");
+      result.append(ChatColor.WHITE);
+      result.append(" with " + getDuelee().getHealth() + "hp");
+
+    } else if (loser.equals(getDueler())) {
+      S_a = 1;
+      S_b = 0;
+
+      int[] honorChange = calculateElo(R_a, R_b, S_a, S_b, DuelConfig.getX(), DuelConfig.getK());
+      N_a = honorChange[0] + R_a;
+      N_b = honorChange[1] + R_b;
+      result.append(getDueler().getDisplayName());
+      result.append(ChatColor.GREEN);
+      result.append(" " + N_a + " (+" + honorChange[0] + ")");
+      result.append(ChatColor.WHITE);
+      result.append(" has beaten ");
+      result.append(getDuelee().getDisplayName());
+      result.append(ChatColor.RED);
+      result.append(" " + N_b + " (-" + honorChange[1] + ")");
+      result.append(ChatColor.WHITE);
+      result.append(" with " + getDuelee().getHealth() + "hp");
+
+    } else {
+      // draw
+      int[] honorChange = calculateElo(R_a, R_b, S_a, S_b, DuelConfig.getX(), DuelConfig.getK());
+      N_a = honorChange[0] + R_a;
+      N_b = honorChange[1] + R_b;
+      result.append(honorChange[0] > 0 ? getDueler().getDisplayName() : getDuelee().getDisplayName());
+      result.append(ChatColor.GREEN);
+      result.append(" " + N_a + " (+" + honorChange[0] + ")");
+      result.append(ChatColor.WHITE);
+      result.append(" ran out the duel timer against ");
+      result.append(honorChange[0] < 0 ? getDueler().getDisplayName() : getDuelee().getDisplayName());
+      result.append(ChatColor.RED);
+      result.append(" " + N_b + " (+" + honorChange[1] + ")");
+    }
+
+    setPlayerHonor(getDueler(), N_a);
+    setPlayerHonor(getDuelee(), N_b);
+
+    Bukkit.broadcastMessage(result.toString());
   }
 
   public static void onPlayerExitDuelRegion(PlayerMoveEvent e) {

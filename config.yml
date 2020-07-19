@@ -12,7 +12,11 @@ duel:
   cooldownTime: 20 # how soon (in seconds) another game may be initiated after a game has ended
   waitTime: 300 # how long a duel request lasts unfulfilled
   ingameTime: 180 # how long a duel may last
-  initialHonor: 25 # the honor that a player begins with (upon first login)
+  # the honor that a player begins with (upon first login)
+  initialHonor: 1400 # if a player has already logged in, use /honor to make changes
+  # how great an honor difference required for and increase in order of magnitude of the change factor
+  x: 400 # greater number makes for a greater range of honor values across all players
+  k: 32 # change factor (also the maximum honor change occuring from a single duel)
 
 opsDiscoverRegions: false # whether or not ops can discover regions
 

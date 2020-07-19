@@ -1,0 +1,177 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007fec32a77b82, pid=17338, tid=0x00007fec33f59380
+#
+# JRE version: OpenJDK Runtime Environment (8.0_252-b09) (build 1.8.0_252-8u252-b09-1~18.04-b09)
+# Java VM: OpenJDK 64-Bit Server VM (25.252-b09 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# V  [libjvm.so+0x8f1b82]
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread is native thread
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0x0000000000000110
+
+Registers:
+RAX=0x0000000000000000, RBX=0x00007fec33f57700, RCX=0x00007fec3311fd2d, RDX=0x00007fec33f596a0
+RSP=0x00007ffc3ccb4b70, RBP=0x00007ffc3ccb4c30, RSI=0x00007ffc3ccb4d70, RDI=0x0000000000000001
+R8 =0x00000000000000ca, R9 =0x00007fec33f579d0, R10=0x0000000000000000, R11=0x0000000000000246
+R12=0x00007fec33f59300, R13=0x0000000000000000, R14=0x00007ffc3ccb4d70, R15=0x00007ffc3ccb4c40
+RIP=0x00007fec32a77b82, EFLAGS=0x0000000000010246, CSGSFS=0x002b000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007ffc3ccb4b70)
+0x00007ffc3ccb4b70:   0000000000000007 0000000000000000
+0x00007ffc3ccb4b80:   ffffffffffffffff 0000000000000000
+0x00007ffc3ccb4b90:   000000620000006e 00007fec33d687a4
+0x00007ffc3ccb4ba0:   00007fecffffffff 00007fec33f7c050
+0x00007ffc3ccb4bb0:   0000000000000001 00007fec33d61faf
+0x00007ffc3ccb4bc0:   00007fec33f7c560 00007fec33b534cb
+0x00007ffc3ccb4bd0:   00007ffc3ccb5170 00007fec337689d0
+0x00007ffc3ccb4be0:   0000000001e5cb59 00007fec3311a13b
+0x00007ffc3ccb4bf0:   00007fec33117f48 09bd2457967b1900
+0x00007ffc3ccb4c00:   00007fec00000002 00007fec33f57700
+0x00007ffc3ccb4c10:   0000000000000000 00007ffc3ccb5210
+0x00007ffc3ccb4c20:   0000000000000000 000056058a1aa570
+0x00007ffc3ccb4c30:   00007ffc3ccb5278 00007fec33795fd0
+0x00007ffc3ccb4c40:   0000000000000007 0000000000000000
+0x00007ffc3ccb4c50:   0000000000000000 0000000000000002
+0x00007ffc3ccb4c60:   0000000000000000 00000000000000ca
+0x00007ffc3ccb4c70:   00007fec33f579d0 0000000000000000
+0x00007ffc3ccb4c80:   0000000000000246 0000000000000000
+0x00007ffc3ccb4c90:   00007ffc3ccb5210 0000000000000000
+0x00007ffc3ccb4ca0:   000056058a1aa570 00007fec33f579d0
+0x00007ffc3ccb4cb0:   0000000000000000 00007ffc3ccb5278
+0x00007ffc3ccb4cc0:   00007fec33f57700 00000000000043bc
+0x00007ffc3ccb4cd0:   00000000000000ca 00007fec3311fd2d
+0x00007ffc3ccb4ce0:   00007ffc3ccb5200 00007fec3311fd2b
+0x00007ffc3ccb4cf0:   0000000000000246 002b000000000033
+0x00007ffc3ccb4d00:   0000000000000004 000000000000000e
+0x00007ffc3ccb4d10:   0000000000000004 000000000000000c
+0x00007ffc3ccb4d20:   00007ffc3ccb4e00 0000000000000000
+0x00007ffc3ccb4d30:   000056058a1c00d0 0000000000000000
+0x00007ffc3ccb4d40:   000000000000000b 00007fec33f7d590
+0x00007ffc3ccb4d50:   00007fec33760cc0 0000000005d4073c
+0x00007ffc3ccb4d60:   00007fec33f7c3a8 0000000000000004 
+
+Instructions: (pc=0x00007fec32a77b82)
+0x00007fec32a77b62:   00 48 89 45 c8 31 c0 e8 42 e4 8f ff 44 8b 28 49
+0x00007fec32a77b72:   89 c4 48 8d 05 cd a9 65 00 8b 38 e8 a6 e6 8f ff
+0x00007fec32a77b82:   48 8b 98 10 01 00 00 8b 83 a8 00 00 00 83 f8 01
+0x00007fec32a77b92:   74 2c 48 8b 45 c8 64 48 33 04 25 28 00 00 00 45 
+
+Register to memory mapping:
+
+RAX=0x0000000000000000 is an unknown value
+RBX=0x00007fec33f57700 is pointing into the stack for thread: 0x00007fec2c00b000
+RCX=0x00007fec3311fd2d: <offset 0x8d2d> in /lib/x86_64-linux-gnu/libpthread.so.0 at 0x00007fec33117000
+RDX=0x00007fec33f596a0 is an unknown value
+RSP=0x00007ffc3ccb4b70 is an unknown value
+RBP=0x00007ffc3ccb4c30 is an unknown value
+RSI=0x00007ffc3ccb4d70 is an unknown value
+RDI=0x0000000000000001 is an unknown value
+R8 =0x00000000000000ca is an unknown value
+R9 =0x00007fec33f579d0 is pointing into the stack for thread: 0x00007fec2c00b000
+R10=0x0000000000000000 is an unknown value
+R11=0x0000000000000246 is an unknown value
+R12=0x00007fec33f59300 is an unknown value
+R13=0x0000000000000000 is an unknown value
+R14=0x00007ffc3ccb4d70 is an unknown value
+R15=0x00007ffc3ccb4c40 is an unknown value
+
+
+Stack: [0x00007ffc3cbbc000,0x00007ffc3ccbc000],  sp=0x00007ffc3ccb4b70,  free space=994k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x8f1b82]
+C  [libc.so.6+0x3efd0]
+
+
+---------------  P R O C E S S  ---------------
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007fec2c007af0] Threads_lock - owner thread: 0x00007fec2c1c8800
+
+heap address: 0x0000000085000000, size: 1968 MB, Compressed Oops mode: 32-bit
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x0000000100000000
+
+Heap:
+ PSYoungGen      total 36864K, used 15142K [0x00000000d7000000, 0x00000000d9900000, 0x0000000100000000)
+  eden space 31744K, 47% used [0x00000000d7000000,0x00000000d7ec99c8,0x00000000d8f00000)
+  from space 5120K, 0% used [0x00000000d9400000,0x00000000d9400000,0x00000000d9900000)
+  to   space 5120K, 0% used [0x00000000d8f00000,0x00000000d8f00000,0x00000000d9400000)
+ ParOldGen       total 84992K, used 0K [0x0000000085000000, 0x000000008a300000, 0x00000000d7000000)
+  object space 84992K, 0% used [0x0000000085000000,0x0000000085000000,0x000000008a300000)
+ Metaspace       used 6551K, capacity 6718K, committed 6784K, reserved 1056768K
+  class space    used 749K, capacity 835K, committed 896K, reserved 1048576K
+
+Card table byte_map: [0x00007fec3001d000,0x00007fec303f6000] byte_map_base: 0x00007fec2fbf5000
+
+Marking Bits: (ParMarkBitMap*) 0x00007fec330fa3c0
+ Begin Bits: [0x00007fec14280000, 0x00007fec16140000)
+ End Bits:   [0x00007fec16140000, 0x00007fec18000000)
+
+Polling page: 0x00007fec33f7b000
+
+CodeCache: size=245760Kb used=2028Kb max_used=2032Kb free=243731Kb
+ bounds [0x00007fec1d000000, 0x00007fec1d270000, 0x00007fec2c000000]
+ total_blobs=763 nmethods=451 adapters=227
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 0.301 Thread 0x00007fec2c20f800 nmethod 444 0x00007fec1d1f7f50 code [0x00007fec1d1f80c0, 0x00007fec1d1f8308]
+Event: 0.301 Thread 0x00007fec2c20f800  446       3       java.io.DataInputStream::readInt (72 bytes)
+Event: 0.302 Thread 0x00007fec2c20f800 nmethod 446 0x00007fec1d1f83d0 code [0x00007fec1d1f85a0, 0x00007fec1d1f8b48]
+Event: 0.302 Thread 0x00007fec2c20f800  443  s    3       java.lang.Throwable::fillInStackTrace (29 bytes)
+Event: 0.303 Thread 0x00007fec2c20f800 nmethod 443 0x00007fec1d1f8d90 code [0x00007fec1d1f8f00, 0x00007fec1d1f92a8]
+Event: 0.304 Thread 0x00007fec2c20d800 nmethod 442 0x00007fec1d1fc390 code [0x00007fec1d1fc500, 0x00007fec1d1fc938]
+Event: 0.305 Thread 0x00007fec2c20f800  447       3       java.util.StringTokenizer::hasMoreTokens (29 bytes)
+Event: 0.305 Thread 0x00007fec2c20f800 nmethod 447 0x00007fec1d1fbf90 code [0x00007fec1d1fc100, 0x00007fec1d1fc308]
+Event: 0.305 Thread 0x00007fec2c20f800  448       3       java.util.StringTokenizer::nextToken (92 bytes)
+Event: 0.305 Thread 0x00007fec2c20f800 nmethod 448 0x00007fec1d1fb810 code [0x00007fec1d1fb9c0, 0x00007fec1d1fbdf8]
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 0.236 Thread 0x00007fec2c375800 Exception <a 'java/lang/NoSuchFieldError': method resolution failed> (0x00000000d78cb100) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/prims/methodHandles.cpp, line 1167]
+Event: 0.238 Thread 0x00007fec2c375800 Exception <a 'java/lang/NoSuchFieldError': method resolution failed> (0x00000000d78d8820) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/prims/methodHandles.cpp, line 1167]
+Event: 0.255 Thread 0x00007fec2c00b000 Exception <a 'java/lang/NoSuchMethodError': org.junit.runner.Description.createSuiteDescription(Ljava/lang/String;)Lorg/junit/runner/Description;> (0x00000000d7a89498) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/interpr
+Event: 0.256 Thread 0x00007fec2c00b000 Exception <a 'java/lang/NoSuchMethodError': org.junit.runner.Description.createSuiteDescription(Ljava/lang/String;)Lorg/junit/runner/Description;> (0x00000000d7a8b218) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/interpr
+Event: 0.296 Thread 0x00007fec2c375800 Exception <a 'java/security/PrivilegedActionException'> (0x00000000d7a38ce0) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/prims/jvm.cpp, line 1502]
+Event: 0.296 Thread 0x00007fec2c375800 Exception <a 'java/security/PrivilegedActionException'> (0x00000000d7a390d8) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/prims/jvm.cpp, line 1502]
+Event: 0.296 Thread 0x00007fec2c375800 Exception <a 'java/security/PrivilegedActionException'> (0x00000000d7a3b530) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/prims/jvm.cpp, line 1502]
+Event: 0.296 Thread 0x00007fec2c375800 Exception <a 'java/security/PrivilegedActionException'> (0x00000000d7a3b928) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/prims/jvm.cpp, line 1502]
+Event: 0.296 Thread 0x00007fec2c375800 Exception <a 'java/security/PrivilegedActionException'> (0x00000000d7a3c7d0) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/prims/jvm.cpp, line 1502]
+Event: 0.296 Thread 0x00007fec2c375800 Exception <a 'java/security/PrivilegedActionException'> (0x00000000d7a3cbc8) thrown at [/build/openjdk-8-piDAoU/openjdk-8-8u252-b09/src/hotspot/src/share/vm/prims/jvm.cpp, line 1502]
+
+Events (10 events):
+Event: 0.326 loading class org/apache/maven/surefire/booter/ForkedBooter$1
+Event: 0.326 loading class org/apache/maven/surefire/booter/ForkedBooter$1 done
+Event: 0.327 loading class java/util/HashMap$KeyIterator
+Event: 0.327 loading class java/util/HashMap$KeyIterator done
+Event: 0.327 loading class java/lang/Shutdown
+Event: 0.327 Thread 0x00007fec2c375800 Thread exited: 0x00007fec2c375800
+Event: 0.327 loading class java/lang/Shutdown done
+Event: 0.327 loading class java/lang/Shutdown$Lock
+Event: 0.327 loading class java/lang/Shutdown$Lock done
+Event: 0.327 Executing VM operation: Exit
+
+
+Dynamic libraries:

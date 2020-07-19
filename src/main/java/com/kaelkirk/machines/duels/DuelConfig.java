@@ -21,6 +21,8 @@ public class DuelConfig {
   private Integer pregameTime;
   private Integer ingameTime;
   private Integer postgameTime;
+  private Double x;
+  private Double k;
 
   private DuelConfig() { }
 
@@ -70,6 +72,22 @@ public class DuelConfig {
     
     duelConfig.initialHonor = duelConfig.config.getInt("duel.initialHonor");
     return duelConfig.initialHonor;
+  }
+
+  public static Double getX() {
+    if (duelConfig.x != null)
+      return duelConfig.x;
+    
+    duelConfig.x = duelConfig.config.getDouble("duel.x");
+    return duelConfig.x;
+  }
+
+  public static Double getK() {
+    if (duelConfig.k != null)
+      return duelConfig.k;
+    
+    duelConfig.k = duelConfig.config.getDouble("duel.k");
+    return duelConfig.k;
   }
 
   public static ProtectedRegion getDuelRegion() {

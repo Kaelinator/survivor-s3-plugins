@@ -1,7 +1,5 @@
 package com.kaelkirk.machines.region;
 
-import java.util.HashSet;
-
 import com.kaelkirk.machines.duels.DuelConfig;
 import com.kaelkirk.machines.duels.DuelMachine;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
