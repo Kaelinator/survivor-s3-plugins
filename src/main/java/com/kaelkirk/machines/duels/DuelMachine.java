@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
 
+import javax.activity.InvalidActivityException;
+
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.flags.Flags;
 
@@ -83,10 +85,10 @@ public class DuelMachine implements Runnable {
       case PREGAME:
         duelMachine.duel.update();
 
-        if (!isInDuelRegion(duelee))
-          endMatch(duelee);
-        if (!isInDuelRegion(dueler))
-          endMatch(dueler);
+        if (!isInDuelRegion(duelee) || !isInDuelRegion(dueler)) {
+          sendText(duelMachine.duel, "Duel cancelled");
+          duelMachine.duel = new DuelData();
+        }
 
         if (time <= 0) {
           duelMachine.duel.setState(DuelState.INGAME);
@@ -120,12 +122,10 @@ public class DuelMachine implements Runnable {
         break;
 
       case WAITING:
-        System.err.println("Duel shouldn't be in WAITING state");
-        break;
+        throw new NullPointerException("Duel shouldn't be in WAITING state");
 
       default:
-        System.err.println("Invalid duel state");
-        break;
+        throw new NullPointerException("Invalid duel state");
     }
   }
   
@@ -187,11 +187,11 @@ public class DuelMachine implements Runnable {
       result.append(" has beaten ");
       result.append(getDueler().getDisplayName());
       result.append(ChatColor.RED);
-      result.append(" " + N_a + " (-" + honorChange[0] + ")");
+      result.append(" " + N_a + " (" + honorChange[0] + ")");
       result.append(ChatColor.WHITE);
       result.append(" with " + getDuelee().getHealth() + "hp");
 
-    } else if (loser.equals(getDueler())) {
+    } else if (loser.equals(getDuelee())) {
       S_a = 1;
       S_b = 0;
 
@@ -205,7 +205,7 @@ public class DuelMachine implements Runnable {
       result.append(" has beaten ");
       result.append(getDuelee().getDisplayName());
       result.append(ChatColor.RED);
-      result.append(" " + N_b + " (-" + honorChange[1] + ")");
+      result.append(" " + N_b + " (" + honorChange[1] + ")");
       result.append(ChatColor.WHITE);
       result.append(" with " + getDuelee().getHealth() + "hp");
 
@@ -214,14 +214,14 @@ public class DuelMachine implements Runnable {
       int[] honorChange = calculateElo(R_a, R_b, S_a, S_b, DuelConfig.getX(), DuelConfig.getK());
       N_a = honorChange[0] + R_a;
       N_b = honorChange[1] + R_b;
-      result.append(honorChange[0] > 0 ? getDueler().getDisplayName() : getDuelee().getDisplayName());
+      result.append(honorChange[0] >= 0 ? getDueler().getDisplayName() : getDuelee().getDisplayName());
       result.append(ChatColor.GREEN);
       result.append(" " + N_a + " (+" + honorChange[0] + ")");
       result.append(ChatColor.WHITE);
       result.append(" ran out the duel timer against ");
-      result.append(honorChange[0] < 0 ? getDueler().getDisplayName() : getDuelee().getDisplayName());
+      result.append(honorChange[0] <= 0 ? getDueler().getDisplayName() : getDuelee().getDisplayName());
       result.append(ChatColor.RED);
-      result.append(" " + N_b + " (+" + honorChange[1] + ")");
+      result.append(" " + N_b + " (" + honorChange[1] + ")");
     }
 
     setPlayerHonor(getDueler(), N_a);
@@ -235,7 +235,6 @@ public class DuelMachine implements Runnable {
     for (DuelData req : duelMachine.duelRequests) {
       if (req.getDueler().equals(p)) {
 
-        e.setCancelled(true);
         return;
       }
     }
@@ -425,10 +424,8 @@ public class DuelMachine implements Runnable {
           time = DuelConfig.getWaitTime();
           break;
         default:
-          System.err.println("Invalid DuelState in setState");
           time = 0;
-          break;
-        
+          throw new NullPointerException("Invalid DuelState in setState");
       }
       this.state = state;
     }

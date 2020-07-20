@@ -1,5 +1,7 @@
 package com.kaelkirk.machines.region;
 
+import java.util.HashSet;
+
 import com.kaelkirk.machines.duels.DuelConfig;
 import com.kaelkirk.machines.duels.DuelMachine;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -58,11 +60,13 @@ public class RegionChangeHandler implements Listener {
     for (ProtectedRegion applicableRegion : set) {
       if (applicableRegion.equals(DuelConfig.getDuelRegion()))
         inDuelRegion = true;
-      for (DiscoverableRegion region : regions) 
-        if (region.isDiscovered() && (!RegionConfig.getOpsDiscoverRegions() && p.isOp()))
+      for (DiscoverableRegion region : regions) {
+        if (region.isDiscovered() || (!RegionConfig.getOpsDiscoverRegions() && p.isOp()))
           continue;
-        else if (applicableRegion.equals(region.getRegion()))
+
+        if (applicableRegion.equals(region.getRegion()))
           triggerDiscover(region, p);
+      }
     }
 
     handleDuelRegion(p, inDuelRegion, e);
@@ -100,7 +104,7 @@ public class RegionChangeHandler implements Listener {
       ChatColor.WHITE + " has been discovered by " + by.getDisplayName());
 
     spawnFirework(region.getLocation());
-    spawnFirework(by.getLocation());
+    spawnFirework(by.getLocation().add(0, 5, 0));
   }
 
   private void spawnFirework(org.bukkit.Location location) {

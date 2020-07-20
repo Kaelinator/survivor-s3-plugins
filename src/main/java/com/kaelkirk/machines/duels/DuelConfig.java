@@ -97,24 +97,19 @@ public class DuelConfig {
 
     String duelLocation = duelConfig.config.getString("duel.location");
     String[] duelSplit = duelLocation.split(":");
-    if (duelSplit.length != 2) {
-      System.err.println("Invalid duel location: " + duelLocation);
-      System.out.println(duelSplit.length);
-      return null;
-    }
+    if (duelSplit.length != 2)
+      throw new NullPointerException("Invalid duel location: " + duelLocation);
     
     World world = Bukkit.getWorld(duelSplit[0]);
-    if (world == null) {
-      System.err.println("World " + duelSplit[0] + " does not exist");
-      return null;
-    }
+    if (world == null)
+      throw new NullPointerException("World " + duelSplit[0] + " does not exist");
 
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     RegionManager regions = container.get(BukkitAdapter.adapt(world));
     duelConfig.duelRegion = regions.getRegion(duelSplit[1]);
 
     if (duelConfig.duelRegion == null)
-      System.err.println("Region " + duelSplit[1] + " does not exist in world " + duelSplit[0]);
+      throw new NullPointerException("Region " + duelSplit[1] + " does not exist in world " + duelSplit[0]);
     
     return duelConfig.duelRegion;
   }

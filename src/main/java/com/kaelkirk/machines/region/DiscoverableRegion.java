@@ -31,20 +31,18 @@ public class DiscoverableRegion {
       y = Double.parseDouble(loc[1]);
       z = Double.parseDouble(loc[2]);
     } catch (Exception e) {
-      System.err.println("Invalid blockLocation at " + worldName + "." + regionId);
+      throw new NullPointerException("Invalid blockLocation at " + worldName + "." + regionId);
     }
 
-    String blockName = block.startsWith("minecraft:") ? block.split(":")[1] : block;
-
-    blockType = Material.matchMaterial(blockName);
+    blockType = Material.matchMaterial(block);
 
     if (blockType == null)
-      System.err.println("Invalid material " + block + " at " + worldName + "." + regionId);
+      throw new NullPointerException("Invalid material \"" + block + "\" at " + worldName + "." + regionId);
     
     World world = Bukkit.getWorld(worldName);
 
     if (world == null)
-      System.err.println("Cannot find world " + world);
+      throw new NullPointerException("Cannot find world named \"" + worldName + "\"");
 
     location = new Location(world, x, y, z);
 
@@ -53,7 +51,7 @@ public class DiscoverableRegion {
     region = regions.getRegion(regionId);
 
     if (region == null)
-      System.err.println("Region " + regionId + " does not exist in world " + worldName);
+      throw new NullPointerException("Region " + regionId + " does not exist in world " + worldName);
   }
 
   public ProtectedRegion getRegion() {
