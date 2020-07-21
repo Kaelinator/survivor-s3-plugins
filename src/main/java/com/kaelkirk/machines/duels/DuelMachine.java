@@ -1,10 +1,10 @@
 package com.kaelkirk.machines.duels;
 
+import static com.kaelkirk.machines.duels.EloCalculator.calculateElo;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
-
-import javax.activity.InvalidActivityException;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -19,8 +19,6 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
-
-import static com.kaelkirk.machines.duels.EloCalculator.calculateElo;
 
 public class DuelMachine implements Runnable {
 

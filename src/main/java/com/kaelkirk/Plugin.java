@@ -1,5 +1,8 @@
 package com.kaelkirk;
 
+import com.kaelkirk.machines.antiblock.CraftHandler;
+import com.kaelkirk.machines.antiblock.DropHandler;
+import com.kaelkirk.machines.antiblock.SmeltHandler;
 import com.kaelkirk.machines.duels.DuelCommand;
 import com.kaelkirk.machines.duels.DuelConfig;
 import com.kaelkirk.machines.duels.DuelMachine;
@@ -39,6 +42,9 @@ public class Plugin extends JavaPlugin {
     manager.registerEvents(new DuelScoreboard(this), this);
     manager.registerEvents(new DuelPvpHandler(this), this);
     manager.registerEvents(new RegionChangeHandler(this), this);
+    manager.registerEvents(new SmeltHandler(), this);
+    manager.registerEvents(new CraftHandler(), this);
+    manager.registerEvents(new DropHandler(), this);
 
     getCommand("wtp").setExecutor(new WorldTeleportCommand(this));
     getCommand("duel").setExecutor(new DuelCommand());
